@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shake/shake.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:math';
 
 class Result extends StatefulWidget {
@@ -16,20 +17,17 @@ class _ResultState extends State<Result> with SingleTickerProviderStateMixin {
   Animation<double>? _animation;
   AnimationStatus _animationStatus = AnimationStatus.dismissed;
 
-  String result = '';
+  String result = 'lib/assets/images/moeda_coroa.png';
 
   @override
   void initState() {
     super.initState();
-    ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
-      _jogar();
-    });
 
-    if (widget.rng == 1) {
-      result = 'lib/assets/images/moeda_cara.png';
-    } else {
-      result = 'lib/assets/images/moeda_coroa.png';
-    }
+    ShakeDetector detector = ShakeDetector.autoStart(
+        shakeThresholdGravity: 1.5,
+        onPhoneShake: () {
+          _jogar();
+        });
 
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
@@ -40,12 +38,6 @@ class _ResultState extends State<Result> with SingleTickerProviderStateMixin {
       ..addStatusListener((status) {
         _animationStatus = status;
       });
-
-    if (_animationStatus == AnimationStatus.dismissed) {
-      _animationController!.forward();
-    } else {
-      _animationController!.reverse();
-    }
   }
 
   _jogar() {
